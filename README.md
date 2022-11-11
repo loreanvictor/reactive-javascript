@@ -39,7 +39,7 @@ This work is an invesitagtion of what potential syntactic solutions to this shor
 
 ```jsx
 let @count = 0
-const @color = @count % 2 === 0 ? 'red' : 'blue'
+const @color = (@count % 2 === 0) ? 'red' : 'blue'
 
 render(
   <div onclick={() => @count++} style={{ color }}>
@@ -49,8 +49,8 @@ render(
 ```
 ```js
 // without JSX
-let @count = 0;
-button$.addEventListener('click', () => @count++);
+let @count = 0
+button$.addEventListener('click', () => @count++)
 
 observe {
   span$.textContent = @count;
@@ -64,7 +64,7 @@ observe {
 ```js
 // Or potentially, with also support from DOM APIs:
 let @count = 0
-const @color = @count % 2 === 0 ? 'red' : 'blue'
+const @color = (@count % 2 === 0) ? 'red' : 'blue'
 
 button$.addEventListener('click', () => @count++)
 span$.textContent = count
