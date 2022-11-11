@@ -38,6 +38,7 @@ color.subscribe(c => div$.style.color = c)
 This work is an invesitagtion of what potential syntactic solutions to this shortcoming would look like:
 
 ```jsx
+// No need for re-running functional components, or even using functional components
 let @count = 0
 const @color = (@count % 2 === 0) ? 'red' : 'blue'
 
@@ -49,6 +50,8 @@ render(
 ```
 ```js
 // without JSX
+// No need for FRP style programming
+
 let @count = 0
 button$.addEventListener('click', () => @count++)
 
@@ -63,6 +66,7 @@ observe {
 ```
 ```js
 // Or potentially, with also support from DOM APIs:
+
 let @count = 0
 const @color = (@count % 2 === 0) ? 'red' : 'blue'
 
