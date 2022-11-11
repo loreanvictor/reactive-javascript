@@ -38,7 +38,9 @@ color.subscribe(c => div$.style.color = c)
 This work is an invesitagtion of what potential syntactic solutions to this shortcoming would look like:
 
 ```jsx
-// No need for re-running functional components, or even using functional components
+// No need for re-running functional components,
+// or even using functional components
+
 let @count = 0
 const @color = (@count % 2 === 0) ? 'red' : 'blue'
 
