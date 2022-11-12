@@ -35,7 +35,7 @@ color.subscribe(c => div$.style.color = c)
 
 <br>
 
-This work is an invesitagtion of what potential syntactic solutions to this shortcoming would look like:
+This work is an invesitagtion of what potential syntactic solutions to this shortcoming would look like. The main idea is to be able to treat observable values as plain values in expressions, thus removing syntactic overhead required for conducting basic operations on observable values (re-evaluation of functional components in React, FRP-style programming with RxJS).
 
 ```jsx
 // No need for re-running functional components,
