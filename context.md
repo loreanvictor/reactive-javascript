@@ -67,7 +67,7 @@ console.log(@ => @a + 2)
 
 <br>
 
-_💡 So in colcusion, for the general case, the scope/context in which observable values are treated as plain values in expressions MUST be explicitly specified, and out-of-context usage of any syntactic element enabling that behavior MUST be ruled as syntax error. In the rest of this document (and generally across this repository), we will call such contexts **Observable Contexts**_
+_💡 To summarize, for the general case, the scope/context in which observable values are treated as plain values in expressions MUST be explicitly specified, and out-of-context usage of any syntactic element enabling that behavior MUST be ruled as syntax error. In the rest of this document (and generally across this repository), we will call such contexts **Observable Contexts**._
 
 <br>
 
