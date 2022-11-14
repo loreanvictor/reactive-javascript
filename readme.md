@@ -117,7 +117,7 @@ A mechanism for accessing values wrapped within some other container such as obs
 
 <br>
 
-# Base Idea
+# Core Idea
 The main idea is to add a syntax to _flatten_ observables so that their values is usable in expressions just as plain values are. This is similar to what `await` syntax does for `Promise`s: without it, you need to pass handler functions to be able to access values wrapped within a `Promise`:
 
 ```js
