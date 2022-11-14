@@ -147,7 +147,7 @@ const b = @a + 2
 
 <br>
 
-Similar to how flattening `Promise`s can only occur in asynchronous contexts, flattening observables can also only occur in observable contexts ([read this for more on why](context.md)). Similar to an asynchronous anonymous function, this can be done with a construct such as `@ =>` which follows the same syntactic hierarchy as an arrow function and turns the following expression into an observable context:
+Similar to how flattening `Promise`s can only occur in asynchronous contexts, flattening observables can also only occur in observable contexts ([read this for more on why](context.md)). This can be achieved with a construct similar to anonymous async functions, explicitly specifying boundaries of an observable context:
 
 ```js
 const a = makeObservable(...)
