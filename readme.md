@@ -209,3 +209,15 @@ observe {
   console.log('a is completed now.')
 }
 ```
+Which would be equivalent to:
+```js
+a.subscribe(
+  _a => console.log(_a + 2),
+  (error) => {
+    console.log('Something went wrong ...')
+  },
+  () => {
+    console.log('a is completed now.')
+  }
+)
+```
