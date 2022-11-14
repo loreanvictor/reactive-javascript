@@ -159,6 +159,8 @@ Which _can_ be further simplified by introducing an _observable creation_ constr
 ```js
 const a = makeObservable(...)
 const @b = @a + 2
+// ☝️ this is shorthand for
+// const b = @ => @a + 2
 ```
 
 Similar to an anonymous function, the observable _"function"_ can also have a complete function body:
