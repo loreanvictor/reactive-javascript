@@ -193,3 +193,19 @@ Or:
 ```js
 (@ => { console.log(@a) }).subscribe()
 ```
+
+This syntax can be further enhanced to allow handling errors that occur on execution path of an observation and finalize the whole process:
+
+```js
+observe {
+  console.log(@a + 2)
+} catch (error) {
+  // an error has occured while computing new values for this observation,
+  // which terminates the observation.
+  console.log('Something went wrong ...')
+} finally {
+  // the observation is finished because all of its observable sources have
+  // finished producing data.
+  console.log('a is completed now.')
+}
+```
