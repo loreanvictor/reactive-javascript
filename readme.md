@@ -179,7 +179,11 @@ const b = @ => {
 }
 ```
 
-> 👉 [Read this](flattening.md) for more details on the proposed syntax.
+---
+
+👉 [Read this](flattening.md) for more details on the proposed syntax for observable flattening.
+
+---
 
 <br>
 
