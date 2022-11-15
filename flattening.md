@@ -124,7 +124,17 @@ In other words, the expression yields a new observable that whenever either one 
 ```
 where `@a_1`, ..., `@a_n` appear in the statements and the optional return expression, with the same transpilation.
 
-Some examples:
+> For semantic clarity, in these examples, behavior of [`combineLatest()`](https://rxjs.dev/api/index/function/combineLatest) 
+> and [`map()`](https://rxjs.dev/api/index/function/map) from [RxJS](https://rxjs.dev) is assumed, though for an actual implementation,
+> pehraps more efficient and light-weight libraries can be utilized. There is also an implicit assumption here that is not mentioned in the examples
+> for sake of maintaing code clarity: if any `a_i` is not an observable, then `of(a_i)` is used for the transpilation. This can be conducted with a simple
+> normalizing operator where all arguments are passed through it:
+> ```js
+> const normalize = o => (o instance of Observable) ? o : of(o)
+> ```
+
+<details><summary>Some Examples</summary>
+  
 ```js
 // Proposed syntax:
 const a = interval(100)
@@ -160,4 +170,45 @@ const b = combineLatest(a).pipe(
   })
 )
 ```
+
 <br>
+
+```js
+// Proposed syntax
+const a = interval(100)
+const b = interval(200)
+const c = @ => @a + @b
+```
+```js
+// Transpilation:
+const a = interval(100)
+const b = interval(200)
+const c = combineLatest(a, b).pipe(map(([_a, _b]) => _a + _b))
+```
+
+<br>
+
+```js
+// Proposed syntax
+const a = interval(100)
+const b = interval(200)
+const c = @ => {
+  console.log('New Value!')
+  
+  return @a + @b
+}
+```
+```js
+// Transpilation:
+const a = interval(100)
+const b = interval(200)
+const c = combineLatest(a, b).pipe(
+  map(([_a, _b]) => {
+    console.log('New Value!')
+    
+    return _a + _b
+  })
+)
+```
+
+</details>
