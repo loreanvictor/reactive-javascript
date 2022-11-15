@@ -90,6 +90,6 @@ An exception to this would be chain-flattening:
 
 const click = observableFromClick(...)
 const timers = @ => makeAnObservableTimer(...)
-const message = @ => `Latest timer is: ${@@timer}`
+const message = @ => `Latest timer is: ${@@timers}`
 ```
 Here, `timers` is an observable whose values are observables themselves, so `@timers` is still an observable. `@@timers` can unambiguously be resolved to the latest value of the latest observable emitted by `timers`, which means `message` is still only dependent on `timers` and its dependencies do not get changed with every re-evaluation.
