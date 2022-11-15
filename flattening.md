@@ -23,7 +23,7 @@ const b = async () => (await a) + 2
 
 <br>
 
-We could construct a similar construct for specifying _observable contexts_:
+We could use a similar construct for specifying _observable contexts_:
 ```
 @ => <Some Expression>
 ```
@@ -82,7 +82,7 @@ const c = @ => @a + @b
 ```
 `c` has a new value every time `a` or `b` have new values, and this new value is calculated by re-evaluating the observable expression that is defining `c`. However, in our previous, erroneous case, the observable `b` is dependent on changes _every time_ the source observable has a new value, as the dependency is described using an expression within the observable expression itself. The limit to identifiers defined outside of the current context ensures that dependencies are stable and don't change with each re-evaluation of the observable expression.
 
-An exception to this would be chain-flattening:
+An exception to this rule would be chain-flattening:
 ```js
 // What we want to do:
 // start a new timer whenever some button is clicked,
@@ -93,3 +93,71 @@ const timers = @ => makeAnObservableTimer(...)
 const message = @ => `Latest timer is: ${@@timers}`
 ```
 Here, `timers` is an observable whose values are observables themselves, so `@timers` is still an observable. `@@timers` can unambiguously be resolved to the latest value of the latest observable emitted by `timers`, which means `message` is still only dependent on `timers` and its dependencies do not get changed with every re-evaluation.
+
+<br>
+
+## Transpilation
+
+The proposed solution is merely syntactical: in other words it DOES NOT enable new things to do, it only enables rewriting existing code in a simpler, more readable manner. Generally, for any expression `E` with _n_ free variables, and `a_1`, `a_2`, ..., `a_n` being identifiers not appearing in `E`, the following schematic code of the new syntax:
+
+```js
+@ => E(@a_1, @a_2, ..., @a_n)
+```
+
+Would be identical to:
+
+```js
+combineLatest(a_1, a_2, ..., a_n)
+  .pipe(
+    map(([_a_1, _a_2, ..., _a_n]) => E(_a_1, _a_2, ..., _a_n))
+  )
+```
+In other words, the expression yields a new observable that whenever either one of `a_1`, `a_2`, ..., `a_n` have a new value, then `E` is re-evaluated with all of the latest values and the resulting observable assumes (emits) the resulting value. `E` can also be a _function body_, i.e.
+```
+{
+  <STATEMENT>
+  <STATEMENT>
+  ...
+  
+  [return <EXPRESSION>]
+}
+```
+where `@a_1`, ..., `@a_n` appear in the statements and the optional return expression, with the same transpilation.
+
+Some examples:
+```js
+// Proposed syntax:
+const a = interval(100)
+const b = @ => Math.floor(@a / 10)
+```
+```js
+// Transpilation:
+const a = interval(100)
+const b = combineLatest(a).pipe(map(_a => Math.floor(_a / 10)))
+```
+
+<br>
+
+```js
+// Proposed syntax:
+const a = interval(100)
+const b = @ => {
+  const seconds = Math.floor(@a / 10)
+  const centi = @a - seconds
+  
+  return `${seconds}:${centi}`
+}
+```
+```js
+// Transpilation:
+const a = interval(100)
+const b = combineLatest(a).pipe(
+  map(_a => {
+    const seconds = Math.floor(_a / 10)
+    const centi = _a - seconds
+  
+    return `${seconds}:${centi}`
+  })
+)
+```
+<br>
