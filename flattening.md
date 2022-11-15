@@ -104,7 +104,7 @@ The proposed solution is merely syntactical: in other words it DOES NOT enable n
 @ => E(@a_1, @a_2, ..., @a_n)
 ```
 
-Would be identical to:
+Could be transpiled to:
 
 ```js
 combineLatest(a_1, a_2, ..., a_n)
@@ -133,7 +133,7 @@ where `@a_1`, ..., `@a_n` appear in the statements and the optional return expre
 > const normalize = o => (o instance of Observable) ? o : of(o)
 > ```
 
-<details><summary>Some Examples</summary>
+<details><summary>Example</summary>
   
 ```js
 // Proposed syntax:
@@ -143,10 +143,11 @@ const b = @ => Math.floor(@a / 10)
 ```js
 // Transpilation:
 const a = interval(100)
-const b = combineLatest(a).pipe(map(_a => Math.floor(_a / 10)))
+const b = combineLatest(a).pipe(map(([_a]) => Math.floor(_a / 10)))
 ```
 
-<br>
+</details>
+<details><summary>Another Example</summary>
 
 ```js
 // Proposed syntax:
@@ -162,7 +163,7 @@ const b = @ => {
 // Transpilation:
 const a = interval(100)
 const b = combineLatest(a).pipe(
-  map(_a => {
+  map(([_a]) => {
     const seconds = Math.floor(_a / 10)
     const centi = _a - seconds
   
@@ -171,7 +172,8 @@ const b = combineLatest(a).pipe(
 )
 ```
 
-<br>
+</details>
+<details><summary>Another Example</summary>
 
 ```js
 // Proposed syntax
@@ -186,7 +188,8 @@ const b = interval(200)
 const c = combineLatest(a, b).pipe(map(([_a, _b]) => _a + _b))
 ```
 
-<br>
+</details>
+<details><summary>Another Example</summary>
 
 ```js
 // Proposed syntax
@@ -209,6 +212,43 @@ const c = combineLatest(a, b).pipe(
     return _a + _b
   })
 )
+```
+
+</details>
+
+For transpilation of chain flattening, we can flatten the observable before combining it with other observables, i.e. we could transpile the  general form:
+```js
+@ => E(@@a_1, @a_2, ..., @a_n)
+```
+to:
+```js
+combineLatest(a_1.pipe(switchAll()), a_2, ..., a_n)
+  .pipe(
+    map(([_a_1, _a_2, ..., _a_n]) => E(_a_1, _a_2, ..., _a_n))
+  )
+```
+With the same transpilation for any arbitrary `a_i`. Additionally, for larger flattening chains, we just need to further flatten the observable, i.e. turn the following:
+```js
+@@@@a_5
+```
+to:
+```js
+a_5.pipe(switchAll(), switchAll(), switchAll())
+```
+
+<details><summary>Example</summary>
+
+```js
+// Proposed syntax:
+const click = fromEvent($btn, 'click')
+const timers = @ => { @click; return interval(1000) }
+const message = @ => `Latest timer is: ${@@timers}`
+```
+```js
+// Transpilation:
+const click = fromEvent($btn, 'click')
+const timers = combineLatest(click).pipe(map(([_click]) => { _click; return interval(1000) })
+const message = combineLatest(timers.pipe(switchAll())).pipe(map(([__timers]) => `Latest timer is ${__timers}`))
 ```
 
 </details>
