@@ -179,6 +179,10 @@ const b = @ => {
 }
 ```
 
+> 👉 [Read this](flattening.md) for more details on the proposed syntax.
+
+<br>
+
 Unlike `Promise`s, which are immediately executed, observables are _lazy_, which means they don't get executed until they are observed. To facilitate this, an additional syntactic construct can be created in form of a new keyword, `observe`:
 
 ```js
