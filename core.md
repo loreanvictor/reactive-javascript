@@ -10,4 +10,23 @@ const b = (await a) + 2
 ```js
 const a = makeSomePromise(...)
 const b = async () => (await a) + 2
+
+/* Note that b is not eagerly evaluated (you need to call it) while a is. The correct code would basically be:
+ * ```js
+ * const a = makeSomePromise(...)
+ * const b = (async () => (await a) + 2)()
+ * ```
+ * However, since observables are also lazily evaluated, we don't have to worry about 
+ * this lazy-to-eager syntactic overhead for our problem.
+ */
+```
+We could construct a similar construct for specifying _observable contexts_:
+```
+@ => <Some Expression>
+```
+The expression following `@ =>` would basically become an _observable context_, within it we could use a flattening operator, similar to `await`, for accessing values within observables:
+
+```js
+const a = makeSomeObservable(...)
+const b = @ => @a + 2
 ```
