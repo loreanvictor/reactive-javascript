@@ -224,7 +224,7 @@ to:
 ```js
 combineLatest(a_1.pipe(switchAll()), a_2, ..., a_n)
   .pipe(
-    map(([_a_1, _a_2, ..., _a_n]) => E(_a_1, _a_2, ..., _a_n))
+    map(([__a_1, _a_2, ..., _a_n]) => E(__a_1, _a_2, ..., _a_n))
   )
 ```
 With the same transpilation for any arbitrary `a_i`. Additionally, for larger flattening chains, we just need to further flatten the observable, i.e. turn the following:
