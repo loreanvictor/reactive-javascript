@@ -1,43 +1,38 @@
 # Observable Flattening
 
-The core idea of the proposed solution is syntactically _flattening_ observable values, i.e. making values wrapped inside an observable accessible to use within expressions, similar to how `await` keyword _flattens_ `Promise`s. Much like flattening `Promise`s, flattening observables MUST be restricted to explicitly specified contexts ([read this for more details](context.md)), which means we'd need a syntactic element to mark some _expression_ as an _observable expression_. For creating such construct, lets follow the example of `Promsie` flattening:
+The core idea of the proposed solution is syntactically _flattening_ observable values, i.e. making values wrapped inside an observable accessible for use within expressions, similar to how `await` keyword _flattens_ `Promise`s. Much like flattening `Promise`s, flattening observables MUST be restricted to explicitly specified contexts ([read this for more details](context.md)), for which we can follow the example of `Promsie` flattening:
 
 ```js
 const a = makeSomePromise(...)
-const b = (await a) + 2
-```
-☝️ This wouldn't work, as we need to put this expression on the second line into an async context. The simplest way of doing that would be to use an asynchronous arrow function, i.e.
-```js
-const a = makeSomePromise(...)
-const b = async () => (await a) + 2
-
-/* Note that b is not eagerly evaluated (you need to call it) while a is. The correct code would basically be:
- * ```js
- * const a = makeSomePromise(...)
- * const b = (async () => (await a) + 2)()
- * ```
- * However, since observables are also lazily evaluated, we don't have to worry about 
- * this lazy-to-eager syntactic overhead for our problem.
- */
+const b = (await a) + 2             // ❌ syntax error
+const b = async () => (await a) + 2 // ✅ this is ok, the expression is now enclosed in an async context
 ```
 
 <br>
 
-We could use a similar construct for specifying _observable contexts_:
+We could use a similar syntax for specifying contexts where flattening observables is possible (_observable context_):
 ```
-@ => <Some Expression>
+@ => <Expression>
+```
+```
+@ => {
+  <Statement>
+  <Statement>
+  ...
+}
 ```
 
 > ❓ _Why this syntax? Why not a new function modifier like `async`?_
 > 
-> Observable expressions, though lazily evaluated, are NOT functions. An async function is NOT a `Promise` itself,
-> it rather yields a `Promise` when you call it. Observable expressions, on the other hand, ARE observables themselves, not functions
-> of observables.
+> The goal here is to have expressions of observables, i.e. _observable expressions_, which are observables themselves.
+> A function modifier would imply a _function_ that _returns an observable when called_, not an observable itself. Though
+> such deferrence is useful for `Promise`s (as `Promise`s are eagerly evaluated while async functions are lazy), it is not
+> useful for observables as observables themselves are lazy.
 
 
 <br>
 
-The expression following `@ =>` would become an _observable context_, within it we could use a flattening operator, similar to `await`, for accessing values within observables:
+Within the context of the expression (or statements) following `@ =>` we could now use a flattening operator, similar to `await`, for accessing values within observables:
 
 ```js
 const a = makeSomeObservable(...)
@@ -63,7 +58,7 @@ const b = @a + 2 // ❌ SYNTAX ERROR!
 ```js
 console.log(@a + 2)
 ```
-It cannot be determined wheter an observable (`@a + 2`) should be logged ONCE, or whether new values of `a` (plus 2) should be logged each time `a` has a new value. Furthermore, without explicit disambiguation, leaning either way would either [result in a semantic contradiction or violate some essential syntactic invariance](context.md).
+It cannot be determined whether an observable (`@a + 2`) should be logged ONCE, or whether new values of `a` (plus 2) should be logged each time `a` has a new value. Furthermore, without explicit disambiguation, leaning either way would either [result in a semantic contradiction or violate some essential syntactic invariance](context.md).
 
 <br>
 
