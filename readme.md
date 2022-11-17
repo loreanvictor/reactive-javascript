@@ -245,3 +245,63 @@ a.subscribe(
 > 👉 [Read this](observation.md) for more details on the proposed syntax for observation.
 
 <br>
+
+## Explicit Dependencies
+
+In the [observable flattening syntax](flattening.md), we create observable expressions that are dependent on some other observables. In the proposed syntax these dependencies are implicitly detected:
+```js
+const c = @ => @a * 2 + @b
+```
+
+It can be particularly useful to be able to explicitly specify these depencies as well. For example, you might want to have run some side effect without using the observed value:
+```js
+// implicit dependencies
+const log = @ => { @click; console.log('CLICKED!') }
+```
+```js
+// explicit dependencies
+const log = @(click) => console.log('CLICKED!')
+```
+
+<br>
+
+It can also increase readability of the code in case of complex expressions:
+```js
+// implicit dependencies
+const dependent = @ => {
+  // some code here
+  somethingDependsOn(@a)
+  
+  // some more code here
+  somethingElseDependsOn(@b)
+  
+  // ...
+}
+```
+```js
+// explicit dependencies
+const dependent = @(a, b) => {
+  // some code here
+  somethingDependsOn(@a)
+  
+  // some more code here
+  somethingElseDependsOn(@b)
+  
+  // ...
+}
+```
+
+<br>
+
+And it can be used as a method of _passively tracking_ some other observables, i.e. using their latest value without re-calculating and re-emitting the expression when they emit new values:
+
+```js
+const c = @(a) => @a * 2 + @b
+// ☝️ c is only re-evaluated when a has a new value, though latest value of b will be used.
+```
+
+<br>
+
+> 👉 [Read this](explicit-dependencies.md) for more details on the proposed syntax for explicit dependencies.
+
+<br>
