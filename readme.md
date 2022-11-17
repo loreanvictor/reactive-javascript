@@ -114,32 +114,35 @@ div$.style.color = color
 
 <br>
 
-# Core Idea
-The main idea is to add a syntax to _flatten_ observables so that their values is usable in expressions just as plain values are. This is similar to what `await` syntax does for `Promise`s: without it, you need to pass handler functions to be able to access values wrapped within a `Promise`:
+# The Idea
+
+As mentioned above, the idea is syntactically [_flattening_ observables](flattening.md), i.e. adding new syntax that allows working with observables
+directly within expressions by providing access to values they _wrap_. This is similar to how `Promise`s are flattened with the `await` keyword:
 
 ```js
 const a = new Promise(...)
-const b = a.then(_a => _a + 2)
-```
+// ...
 
-With the `await` keyword, `Promise`s get flattened, so their value can be used in normal expressions:
+// Not flattened
+a.then(_a => _a + 2)
 
-```js
-const a = new Promise(...)
-const b = (await a) + 2
+// Flattened
+(await a) + 2
 ```
 
 <br>
 
-Similarly, we could have a syntactic solution for flattening observables:
+We could use similar syntax, the `@` operator, for flattening observables:
 
 ```js
 const a = makeObservable(...)
-const b = a.pipe(map(_a => _a + 2))
-```
-```js
-const a = makeObservable(...)
-const b = @a + 2
+// ...
+
+// Not flattened
+a.pipe(map(_a => _a + 2))
+
+// Flattened
+@a + 2
 ```
 
 <br>
@@ -151,38 +154,45 @@ const a = makeObservable(...)
 const b = @ => @a + 2
 ```
 
-Which _can_ be further simplified by introducing an _observable creation_ construct:
+<br>
+
+> 👉 [Read this](flattening.md) for more details on the proposed syntax for observable flattening.
+
+<br>
+
+# Extensions
+
+The proposed [_observable flattening syntax_](flattening.md) can be further extended with additional syntactic sugar, further simplifying common use cases where observables are used. Each of the following extensions can be considered and implemented independently, though they all depend on the original base syntax.
+
+<br>
+
+## Observable Creation
+
+A common use case when handling observables is creating dependent observables, i.e. observables whose value is dependent on some source observables.
+This can be simplified via an additional _observable creation syntax_:
 
 ```js
 const a = makeObservable(...)
-const @b = @a + 2
+const b = makeAnotherObservable(...)
 
-// ☝️ this is shorthand for
-// const b = @ => @a + 2
+const @c = @a * 2 + @b
 ```
-
-Similar to an anonymous function, the observable _"function"_ can also have a complete function body:
-
+Which is shorthand for
 ```js
-const b = @ => { return @a + 2 }
+const c = @ => @a * 2 + @b
 ```
-
-Which allows executing side effects as well:
-
+And would translate to:
 ```js
-const b = @ => {
-  console.log('new value: ' + @a)
-  return @a + 2
-}
+const c = combineLatest(a, b).pipe(map(([_a, _b]) => _a * 2 + _b))
 ```
-
----
-
-👉 [Read this](flattening.md) for more details on the proposed syntax for observable flattening.
-
----
 
 <br>
+
+> 👉 [Read this](creation.md) for more details on the proposed syntax for observable creation.
+
+<br>
+
+## Observation
 
 Unlike `Promise`s, which are immediately executed, observables are _lazy_, which means they don't get executed until they are observed. To facilitate this, an additional syntactic construct can be created in form of a new keyword, `observe`:
 
@@ -229,3 +239,9 @@ a.subscribe(
   }
 )
 ```
+
+<br>
+
+> 👉 [Read this](observation.md) for more details on the proposed syntax for observation.
+
+<br>
