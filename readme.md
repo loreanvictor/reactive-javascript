@@ -305,3 +305,36 @@ const c = @(a) => @a * 2 + @b
 > 👉 [Read this](explicit-dependencies.md) for more details on the proposed syntax for explicit dependencies.
 
 <br>
+
+## Cold Start
+
+In many cases it is helpful to assume a _default_ value for an observable before it emits its first value (for each observation). With the [proposed flattening operator `@`](flattening.md), the observable expression won't be calculated until each observable emits at least once. This can be resolved by adding a cold start operator `@?`, that causes the observable to emit `undefined` initially upon observation, allowing addition of default values:
+
+```js
+const greeting = new Subject()
+const name = new Subject()
+
+const msg = @ => (@?greeting || 'Hellow') + ' ' + (@?name || 'World')
+// ☝️ msg will be 'Hellow World' initially.
+
+greeting.next('Hallo')
+// ☝️ msg will be 'Halo World'.
+
+name.next('Welt')
+// ☝️ msg will be 'Halo Welt'.
+```
+
+Which would be equivalent to:
+
+```js
+const msg = combineLatest(
+  greeting.pipe(startWith(undefined)),
+  name.pipe(startWith(undefined)),
+).pipe(map(([_greeting, _name]) => (_greeting || 'Hellow') + ' ' + (_name || 'World')))
+```
+
+<br>
+
+> 👉 [Read this](cold-start.md) for more details on the proposed syntax for cold start.
+
+<br>
