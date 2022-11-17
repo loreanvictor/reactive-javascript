@@ -314,7 +314,7 @@ In many cases it is helpful to assume a _default_ value for an observable before
 const greeting = new Subject()
 const name = new Subject()
 
-const msg = @ => (@?greeting || 'Hellow') + ' ' + (@?name || 'World')
+const msg = @ => (@?greeting ?? 'Hellow') + ' ' + (@?name ?? 'World')
 // ☝️ msg will be 'Hellow World' initially.
 
 greeting.next('Hallo')
@@ -330,7 +330,7 @@ Which would be equivalent to:
 const msg = combineLatest(
   greeting.pipe(startWith(undefined)),
   name.pipe(startWith(undefined)),
-).pipe(map(([_greeting, _name]) => (_greeting || 'Hellow') + ' ' + (_name || 'World')))
+).pipe(map(([_greeting, _name]) => (_greeting ?? 'Hellow') + ' ' + (_name ?? 'World')))
 ```
 
 <br>
