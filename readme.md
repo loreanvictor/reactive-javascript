@@ -110,7 +110,7 @@ div$.style.color = color
 
 # Terminology
 
-👉 For more precise definitions of various terms and expressions used in this repository regarding reactive programming and observables (such as _observable_, _shared observation_, _flattening_, etc.), [read the _definitions_ document](definitions.md).
+👉 For more precise definitions of various terms and expressions used in this repository regarding reactive programming and observables (such as _observable_, _shared observation_, _flattening_, etc.), [read the _definitions_ document](definitions.md). Generally speaking, semantics similar to that of [RxJS](https://rxjs.dev) are used, for example it is assumed that observables have the same interface as an RxJS [`Subscribable`](https://rxjs.dev/api/index/interface/Subscribable).
 
 <br>
 
