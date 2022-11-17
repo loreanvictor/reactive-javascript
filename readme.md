@@ -6,26 +6,39 @@ Reactive programming in JavaScript is not easy, as it is not directly supported 
 
 Nevertheless, the status quo still feels lacking for such a fundamental use case of JavaScript. Frameworks mostly need to bend the semantics of the language (e.g. [React components are NOT like other functions](https://reactjs.org/docs/hooks-overview.html#rules-of-hooks)) and libraries shift towards paradigms that increase code complexity (e.g. the FRP style of RxJS). Per 2021 State of JS Survey, amongst features missing from JavaScript, [native support for observables was ranked as fifth](https://2021.stateofjs.com/en-US/opinions/#currently_missing_from_js_wins).
 
+<details open><summary>React Example</summary>
 
 ```jsx
 import { useState } from 'react'
 
-function Counter() {
-  const [count, setCount] = useState(0)
+function Counter({ name }) {
+  const [count, setCount] = useState(0) 
+  // ☝️ this function can only be used in a React component.
+
   const color = count % 2 === 0 ? 'red' : 'blue'
+  // ☝️ `color` is recalculated even when `count` has not changed.
   
+  // 👇 a new function is defined every time `count` has a new value.
+  //    a new function is also redefined whenever `name` changes.
   function incr() {
     setCount(count + 1)
   }
   
   return <div onClick={incr} style={{ color }}>
-    You have clicked {incr} times!
+    { name || 'You' } have clicked {incr} times!
   </div>
 }
 ```
+
+</details>
+<details><summary>RxJS Example</summary>
+
 ```js
 import { map, fromEvent, scan } from 'rxjs'
 
+// 👇 FRP style programming is not convenient for many developers.
+//    JavaScript is NOT a functional language, so combination of these styles
+//    inevitably increases code complexity.
 const count = fromEvent(button$, 'click').pipe(scan(c => c + 1, 0))
 const color = count.pipe(map(c => c % 2 === 0 ? 'red' : 'blue'))
 
@@ -33,25 +46,36 @@ count.subscribe(c => span$.textContent = c)
 color.subscribe(c => div$.style.color = c)
 ```
 
+</details>
+
 <br>
 
 This work is an invesitagtion of a potential syntactic solution to this shortcoming. The main idea is to be able to treat observable values as plain values in expressions, thus removing syntactic overhead required for conducting basic operations on observable values (re-evaluation of functional components in React, FRP-style programming with RxJS).
 
+<details open><summary>React Example Re-written</summary>
+
 ```jsx
-// No need for re-running functional components,
-// or even using functional components
+function Counter({ name }) {
+  let @count = 0
+  // ☝️ this can be used anywhere, with the same meaning.
+  
+  const @color = (@count % 2 === 0) ? 'red' : 'blue'
+  // ☝️ `color` is recalculated only when `count` has changed.
 
-let @count = 0
-const @color = (@count % 2 === 0) ? 'red' : 'blue'
-
-render(
-  <div onclick={() => @count++} style={{ color }}>
-    You have clicked { count } times!
-  </div>
-)
+  // 👇 the click callback is defined once
+  return(
+    <div onclick={() => @count++} style={{ color }}>
+      { name || 'You' } have clicked { count } times!
+    </div>
+  )
+}
 ```
+
+</details>
+
+<details><summary>Same Example without JSX</summary>
+
 ```js
-// without JSX
 // No need for FRP style programming
 
 let @count = 0
@@ -66,9 +90,12 @@ observe {
   }
 }
 ```
-```js
-// Or potentially, with also support from DOM APIs:
 
+</details>
+
+<details><summary>Same Example with DOM API Support</summary>
+
+```js
 let @count = 0
 const @color = (@count % 2 === 0) ? 'red' : 'blue'
 
@@ -76,6 +103,8 @@ button$.addEventListener('click', () => @count++)
 span$.textContent = count
 div$.style.color = color
 ```
+
+</details>
 
 <br>
 
