@@ -162,7 +162,7 @@ const b = @ => @a + 2
 
 # Extensions
 
-The proposed [_observable flattening syntax_](flattening.md) can be further extended with additional syntactic sugar, further simplifying common use cases where observables are used. Each of the following extensions can be considered and implemented independently, though they all depend on the original base syntax.
+The proposed [observable flattening syntax](flattening.md) can be further extended with additional syntactic sugar, further simplifying common use cases where observables are used. Each of the following extensions can be considered and implemented independently, though they all depend on the original base syntax.
 
 <br>
 
