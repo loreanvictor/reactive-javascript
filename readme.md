@@ -108,6 +108,19 @@ div$.style.color = color
 
 <br>
 
+# Table of Contents
+
+- [Terminology](#terminology)
+- [The Idea](#the-idea)
+- [Extensions](#extensions)
+  - [Observable Creation](#observable-creation)
+  - [Observation](#observation)
+  - [Explicit Dependencies](#explicit-dependencies)
+  - [Nullish Start](#nullish-start)
+  - [State Management](#state-management)
+
+<br>
+
 # Terminology
 
 👉 For more precise definitions of various terms and expressions used in this repository regarding reactive programming and observables (such as _observable_, _shared observation_, _flattening_, etc.), [read the _definitions_ document](definitions.md). Generally speaking, semantics similar to that of [RxJS](https://rxjs.dev) are used, for example it is assumed that observables have the same interface as an RxJS [`Subscribable`](https://rxjs.dev/api/index/interface/Subscribable).
@@ -194,7 +207,7 @@ const c = combineLatest(a, b).pipe(map(([_a, _b]) => _a * 2 + _b))
 
 ## Observation
 
-Unlike `Promise`s, which are immediately executed, observables are _lazy_, which means they don't get executed until they are observed. To facilitate this, an additional syntactic construct can be created in form of a new keyword, `observe`:
+Unlike `Promise`s, which are immediately executed, observables are _lazy_, which means they don't get executed until they are observed. This basic operation can be further streamlined with additional syntax based on a new keyword, `observe`:
 
 ```js
 observe { console.log(@a) }
@@ -203,14 +216,9 @@ observe { console.log(@a) }
 Which would be equivalent to:
 
 ```js
-a.subscribe(_a => console.log(_a))
+a.subscribe(_a => { console.log(_a) })
 ```
 
-Or:
-
-```js
-(@ => { console.log(@a) }).subscribe()
-```
 
 This syntax can be further enhanced to allow handling errors that occur on execution path of an observation and finalize the whole process:
 
@@ -338,3 +346,66 @@ const msg = combineLatest(
 > 👉 [Read this](ext/nullish-start.md) for more details on the proposed syntax for cold start.
 
 <br>
+
+## State Management
+
+In reactive applications, it is common to be able to _observe_ and react to changes in program state as it is to external events. State can be modeled with observables who can be programmatically instructed to assume new values (e.g. RxJS's [`BehaviorSubject`](https://rxjs.dev/api/index/class/BehaviorSubject)). Managing state can be further streamlined with syntax similar to [observable creation syntax](ext/creation.md):
+
+```js
+let @count = 0
+
+$btn.addEventListener('click', () => @count++)
+
+observe {
+  $div.textContent = `You have clicked ${@count} times!`
+}
+```
+
+Which would be equivalent to:
+
+```js
+const count = new BehaviorSubject(0)
+
+$btn.addEventListener('click', () => count.next(count.value + 1))
+
+count.subscribe(_count => {
+  $div.textContent = `You have clicked ${_count} times!`
+})
+```
+
+<br>
+
+Typically program state is more complicated than plain values and involves nested object trees (composed of arrays and objects). Managing these _deep states_ can also be facilitated by treating properties and indexes of a reactive state as reactive states themselves:
+
+```js
+let @people = [
+  { name: 'Jack', age: 32 },
+  { name: 'Jill', age: 21 },
+]
+
+const averageAge = @ => {
+  const sum = @people.reduce((total, person) => total + person.age, 0)
+  return sum / @people.length
+}
+// ☝️ recalculated whenever there is a change in people
+
+observe { console.log(@people[0].name) }
+// ☝️ logs only when the name of the first person changes
+
+@people[1].age = 23
+// ☝️ averageAge recalculated, no log
+
+@people[0].name = 'Jack'
+// ☝️ logs 'Jack', also averageAge recalculated
+
+@people.push({ name: 'Joel', age: 30 })
+// ☝️ averageAge recalculated, again no log
+```
+
+<br>
+
+> 👉 [Read this](ext/state.md) for more details on the proposed syntax for state management.
+
+<br>
+
+<br><br>
