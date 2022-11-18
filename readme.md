@@ -188,7 +188,7 @@ const c = combineLatest(a, b).pipe(map(([_a, _b]) => _a * 2 + _b))
 
 <br>
 
-> 👉 [Read this](creation.md) for more details on the proposed syntax for observable creation.
+> 👉 [Read this](ext/creation.md) for more details on the proposed syntax for observable creation.
 
 <br>
 
@@ -242,7 +242,7 @@ a.subscribe(
 
 <br>
 
-> 👉 [Read this](observation.md) for more details on the proposed syntax for observation.
+> 👉 [Read this](ext/observation.md) for more details on the proposed syntax for observation.
 
 <br>
 
@@ -302,7 +302,7 @@ const c = @(a) => @a * 2 + @b
 
 <br>
 
-> 👉 [Read this](explicit-dependencies.md) for more details on the proposed syntax for explicit dependencies.
+> 👉 [Read this](ext/explicit-dependencies.md) for more details on the proposed syntax for explicit dependencies.
 
 <br>
 
