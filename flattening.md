@@ -119,6 +119,8 @@ In other words, the expression yields a new observable that whenever either one 
 ```
 where `@a_1`, ..., `@a_n` appear in the statements and the optional return expression, with the same transpilation.
 
+> 💡 _On Transpilation_
+>
 > For semantic clarity, in these examples, behavior of [`combineLatest()`](https://rxjs.dev/api/index/function/combineLatest) 
 > and [`map()`](https://rxjs.dev/api/index/function/map) from [RxJS](https://rxjs.dev) is assumed, though for an actual implementation,
 > pehraps more efficient and light-weight libraries can be utilized. There is also an implicit assumption here that is not mentioned in the examples
