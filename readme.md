@@ -306,7 +306,7 @@ const c = @(a) => @a * 2 + @b
 
 <br>
 
-## Cold Start
+## Nullish Start
 
 In many cases it is helpful to assume a _default_ value for an observable before it emits its first value (for each observation). With the [proposed flattening operator `@`](flattening.md), the observable expression won't be calculated until each observable emits at least once. This can be resolved by adding a cold start operator `@?`, that causes the observable to emit `undefined` initially upon observation, allowing addition of default values:
 
@@ -324,7 +324,7 @@ name.next('Welt')
 // ☝️ msg will be 'Halo Welt'.
 ```
 
-Which would be [roughly equivalent](ext/cold-start.md) to:
+Which would be [roughly equivalent](ext/nullish-start.md) to:
 
 ```js
 const msg = combineLatest(
@@ -335,6 +335,6 @@ const msg = combineLatest(
 
 <br>
 
-> 👉 [Read this](ext/cold-start.md) for more details on the proposed syntax for cold start.
+> 👉 [Read this](ext/nullish-start.md) for more details on the proposed syntax for cold start.
 
 <br>
