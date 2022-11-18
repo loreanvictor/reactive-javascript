@@ -324,7 +324,7 @@ name.next('Welt')
 // ☝️ msg will be 'Halo Welt'.
 ```
 
-Which would be equivalent to:
+Which would be [roughly equivalent](ext/cold-start.md) to:
 
 ```js
 const msg = combineLatest(
@@ -335,6 +335,6 @@ const msg = combineLatest(
 
 <br>
 
-> 👉 [Read this](cold-start.md) for more details on the proposed syntax for cold start.
+> 👉 [Read this](ext/cold-start.md) for more details on the proposed syntax for cold start.
 
 <br>
