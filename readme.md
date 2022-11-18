@@ -57,7 +57,7 @@ This work is an invesitagtion of a potential syntactic solution to this shortcom
 ```jsx
 function Counter({ name }) {
   let @count = 0
-  // ☝️ this can be used anywhere, with the same meaning.
+  // ☝️ this can be used anywhere, with consistent semantics.
   
   const @color = (@count % 2 === 0) ? 'red' : 'blue'
   // ☝️ `color` is recalculated only when `count` has changed.
