@@ -1,7 +1,5 @@
 # Reactive Javascript
 
-> This work started as [this gist](https://gist.github.com/loreanvictor/ef4fbc84e6be32adfb1404d6e0e7d05e) and I am now in the process of better organizing it within this repository.
-
 Reactive programming in JavaScript is not easy, as it is not directly supported by the language itself. The community has tried to address this shortcoming via frameworks that try to solve it specifically for client side applications (like [React](https://reactjs.org)), and reactive programming utilities and libraries (the most famous being [RxJS](https://rxjs.dev)) that address this issue in isolation.
 
 Nevertheless, the status quo still feels lacking for such a fundamental use case of JavaScript. Frameworks mostly need to bend the semantics of the language (e.g. [React components are NOT like other functions](https://reactjs.org/docs/hooks-overview.html#rules-of-hooks)) and libraries shift towards paradigms that increase code complexity (e.g. the FRP style of RxJS). Per 2021 State of JS Survey, amongst features missing from JavaScript, [native support for observables was ranked as fifth](https://2021.stateofjs.com/en-US/opinions/#currently_missing_from_js_wins).
@@ -408,4 +406,4 @@ observe { console.log(@people[0].name) }
 
 <br>
 
-<br><br>
+<br>
