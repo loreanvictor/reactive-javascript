@@ -405,5 +405,3 @@ observe { console.log(@people[0].name) }
 > 👉 [Read this](ext/state.md) for more details on the proposed syntax for state management.
 
 <br>
-
-<br>
