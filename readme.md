@@ -405,3 +405,18 @@ observe { console.log(@people[0].name) }
 > 👉 [Read this](ext/state.md) for more details on the proposed syntax for state management.
 
 <br>
+
+## Async Interactions
+
+A curious property of observable flattening is possible interactions with asynchronous operations. For this to work, we can assume observable contexts as async contexts, and assume cancellation of a pending execution when a new execution is triggered. This way, observably async operations such as debouncing can be expressed in an exceedingly natural and intuitive manner:
+
+```js
+const @obs = makeSomeObservable(...)
+const @debounced = (await sleep(1000), @obs)
+```
+
+<br>
+
+> 👉 [Check this librry](https://github.com/loreanvictor/quel) to see how this would look like in practice.
+
+<br>
